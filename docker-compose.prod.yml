@@ -60,6 +60,7 @@ services:
       OPENSEARCH_URL: http://opensearch:9200
       ALLOWED_ORIGIN: ${ALLOWED_ORIGIN:-*}
       PORT: "8080"
+      APP_PASSKEY: ${APP_PASSKEY:-}
     ports:
       - "8080:8080"
     depends_on:

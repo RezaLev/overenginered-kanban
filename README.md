@@ -4,6 +4,8 @@ A full-stack Todo application built with **Go**, **React (TypeScript)**, **Postg
 
 > Designed to handle **10M+ records** with fast full-text search, faceted filtering, and paginated results.
 
+### 🌐 Live Demo: [http://168.110.211.10:3000](http://168.110.211.10:3000)
+
 ---
 
 ## ✨ Features
@@ -15,6 +17,7 @@ A full-stack Todo application built with **Go**, **React (TypeScript)**, **Postg
 - **Server-Side Pagination** — Efficient pagination for large datasets
 - **CQRS Toggle** — Switch between standard PostgreSQL queries and OpenSearch-backed reads at runtime
 - **Bulk Data Sync** — CLI tool to synchronize PostgreSQL data to OpenSearch using bulk indexing
+- **Passkey Protection** — Mutation endpoints (create, update, delete) require a passkey to prevent unauthorized modifications
 - **Dockerized** — Full-stack deployment with a single `docker-compose` command
 
 ---
@@ -263,6 +266,14 @@ docker exec -it gotodo-backend go run ./cmd/sync
 | `POSTGRES_USER`     | `postgres`                                           | PostgreSQL user (Docker)                               |
 | `POSTGRES_PASSWORD` | `postgres`                                           | PostgreSQL password (Docker)                           |
 | `POSTGRES_DB`       | `gotodo`                                             | PostgreSQL database name (Docker)                      |
+| `APP_PASSKEY`       | *(empty — disabled)*                                 | Passkey for create/update/delete endpoints              |
+
+### 🔒 Passkey Protection
+
+The `APP_PASSKEY` variable controls write-access to the API. When set, all mutation endpoints (`POST`, `PUT`, `DELETE`) require the correct passkey via the `X-Passkey` HTTP header. The frontend will prompt users with a dialog before any write operation.
+
+- **To disable** (local development): Set `APP_PASSKEY=` (empty) — no prompt will appear, all writes are allowed.
+- **To enable** (production): Set `APP_PASSKEY=your_secret` — only users who know the passkey can create, update, or delete records.
 
 ---
 

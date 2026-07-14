@@ -10,12 +10,18 @@ const TodoForm: React.FC = () => {
     e.preventDefault();
     if (!title.trim()) return;
 
-    createTodoMutation.mutate(title, {
+    const passkey = window.prompt('Enter admin passkey:');
+    if (passkey === null) return; // User cancelled
+
+    createTodoMutation.mutate({ title, passkey }, {
       onSuccess: () => {
         setTitle(''); // Clear input on success
         setTimeout(() => {
           inputRef.current?.focus();
         }, 0);
+      },
+      onError: () => {
+        alert('Unauthorized: Invalid Passkey');
       },
     });
   };

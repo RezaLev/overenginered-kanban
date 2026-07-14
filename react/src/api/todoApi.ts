@@ -54,19 +54,19 @@ export const fetchTodoById = async (id: number): Promise<Todo> => {
   return data;
 };
 
-export const createTodo = async (title: string): Promise<Todo> => {
-  const { data } = await api.post('/todos', { title });
+export const createTodo = async (title: string, passkey: string): Promise<Todo> => {
+  const { data } = await api.post('/todos', { title }, { headers: { 'X-Passkey': passkey } });
   return data;
 };
 
-export const updateTodo = async (todo: Todo): Promise<Todo> => {
+export const updateTodo = async (todo: Todo, passkey: string): Promise<Todo> => {
   const { data } = await api.put(`/todos/${todo.id}`, {
     title: todo.title,
     status: todo.status,
-  });
+  }, { headers: { 'X-Passkey': passkey } });
   return data;
 };
 
-export const deleteTodo = async (id: number): Promise<void> => {
-  await api.delete(`/todos/${id}`);
+export const deleteTodo = async (id: number, passkey: string): Promise<void> => {
+  await api.delete(`/todos/${id}`, { headers: { 'X-Passkey': passkey } });
 };

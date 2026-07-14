@@ -11,11 +11,31 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
   const deleteTodoMutation = useDeleteTodo();
 
   const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    updateTodoMutation.mutate({ ...todo, status: parseInt(e.target.value) });
+    const passkey = window.prompt('Enter admin passkey:');
+    if (passkey === null) return;
+
+    updateTodoMutation.mutate(
+      { todo: { ...todo, status: parseInt(e.target.value) }, passkey },
+      {
+        onError: () => {
+          alert('Unauthorized: Invalid Passkey');
+        },
+      }
+    );
   };
 
   const handleDelete = () => {
-    deleteTodoMutation.mutate(todo.id);
+    const passkey = window.prompt('Enter admin passkey:');
+    if (passkey === null) return;
+
+    deleteTodoMutation.mutate(
+      { id: todo.id, passkey },
+      {
+        onError: () => {
+          alert('Unauthorized: Invalid Passkey');
+        },
+      }
+    );
   };
 
   return (

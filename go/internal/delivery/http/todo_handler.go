@@ -3,6 +3,7 @@ package http
 import (
 	"encoding/json"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/rezafahlevi/gotodo/internal/domain"
@@ -99,7 +100,20 @@ func (h *TodoHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, todo)
 }
 
+func validatePasskey(r *http.Request) bool {
+	expected := os.Getenv("APP_PASSKEY")
+	if expected == "" {
+		return true // disabled if not set
+	}
+	return r.Header.Get("X-Passkey") == expected
+}
+
 func (h *TodoHandler) Create(w http.ResponseWriter, r *http.Request) {
+	if !validatePasskey(r) {
+		respondWithError(w, http.StatusUnauthorized, "Unauthorized: Invalid Passkey")
+		return
+	}
+
 	var input struct {
 		Title string `json:"title"`
 	}
@@ -118,6 +132,11 @@ func (h *TodoHandler) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *TodoHandler) Update(w http.ResponseWriter, r *http.Request) {
+	if !validatePasskey(r) {
+		respondWithError(w, http.StatusUnauthorized, "Unauthorized: Invalid Passkey")
+		return
+	}
+
 	idStr := r.PathValue("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
@@ -144,6 +163,11 @@ func (h *TodoHandler) Update(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *TodoHandler) Delete(w http.ResponseWriter, r *http.Request) {
+	if !validatePasskey(r) {
+		respondWithError(w, http.StatusUnauthorized, "Unauthorized: Invalid Passkey")
+		return
+	}
+
 	idStr := r.PathValue("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {

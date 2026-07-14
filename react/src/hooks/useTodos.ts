@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchTodos, fetchFacets, createTodo, updateTodo, deleteTodo } from '../api/todoApi';
+import { fetchTodos, fetchFacets, createTodo, updateTodo, deleteTodo, Todo } from '../api/todoApi';
 
 // Custom hook to fetch all todos
 export const useTodos = (searchQuery: string = '', status?: number, page: number = 1, limit: number = 10) => {
@@ -21,7 +21,7 @@ export const useCreateTodo = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: createTodo,
+    mutationFn: ({ title, passkey }: { title: string; passkey: string }) => createTodo(title, passkey),
     onSuccess: () => {
       // Invalidate and refetch the 'todos' and 'facets' queries so the UI updates automatically
       queryClient.invalidateQueries({ queryKey: ['todos'] });
@@ -35,7 +35,7 @@ export const useUpdateTodo = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: updateTodo,
+    mutationFn: ({ todo, passkey }: { todo: Todo; passkey: string }) => updateTodo(todo, passkey),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['todos'] });
       queryClient.invalidateQueries({ queryKey: ['facets'] });
@@ -48,7 +48,7 @@ export const useDeleteTodo = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: deleteTodo,
+    mutationFn: ({ id, passkey }: { id: number; passkey: string }) => deleteTodo(id, passkey),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['todos'] });
       queryClient.invalidateQueries({ queryKey: ['facets'] });
