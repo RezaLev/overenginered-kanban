@@ -4,7 +4,7 @@ A full-stack Todo application built with **Go**, **React (TypeScript)**, **Postg
 
 > Designed to handle **10M+ records** with fast full-text search, faceted filtering, and paginated results.
 
-### 🌐 Live Demo: [http://168.110.211.10:3000](http://168.110.211.10:3000)
+### 🌐 Live Demo: [http://zlv.my.id:3000](http://zlv.my.id:3000)
 
 ---
 
