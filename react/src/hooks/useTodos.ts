@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchTodos, fetchFacets, createTodo, updateTodo, deleteTodo, Todo } from '../api/todoApi';
+import { fetchTodos, fetchFacets, createTodo, updateTodo, deleteTodo } from '../api/todoApi';
 
 // Custom hook to fetch all todos
 export const useTodos = (searchQuery: string = '', status?: number, page: number = 1, limit: number = 10) => {
