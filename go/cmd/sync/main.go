@@ -102,8 +102,8 @@ func main() {
 	indexer, err := opensearchutil.NewBulkIndexer(opensearchutil.BulkIndexerConfig{
 		Index:      "todos",
 		Client:     osClient,
-		NumWorkers: 4,
-		FlushBytes: 5 * 1024 * 1024,
+		NumWorkers: 1,
+		FlushBytes: 1 * 1024 * 1024,
 	})
 	if err != nil {
 		log.Fatalf("Error creating the indexer: %s", err)
