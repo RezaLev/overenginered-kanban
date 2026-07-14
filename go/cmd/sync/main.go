@@ -47,13 +47,35 @@ func main() {
 		log.Fatalf("Error creating the client: %s", err)
 	}
 
-	// Create Index with mapping
+	// Create Index with mapping and ngram analyzer
 	mapping := `
 	{
+		"settings": {
+			"analysis": {
+				"analyzer": {
+					"trigram_analyzer": {
+						"type": "custom",
+						"tokenizer": "standard",
+						"filter": ["lowercase", "trigram_filter"]
+					}
+				},
+				"filter": {
+					"trigram_filter": {
+						"type": "ngram",
+						"min_gram": 3,
+						"max_gram": 3
+					}
+				}
+			}
+		},
 		"mappings": {
 			"properties": {
 				"id": { "type": "integer" },
-				"title": { "type": "text" },
+				"title": { 
+					"type": "text",
+					"analyzer": "trigram_analyzer",
+					"search_analyzer": "standard"
+				},
 				"status": { "type": "integer" }
 			}
 		}
