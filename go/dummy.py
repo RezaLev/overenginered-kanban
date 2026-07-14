@@ -40,7 +40,7 @@ batch_size = 10000
 total_rows = 10000000
 
 # To guarantee lightning-fast generations, we will utilize random choices efficiently
-print("Writing 1 million random lorem phrases into optimized PostgreSQL batches...")
+print("Writing 10 million random lorem phrases into optimized PostgreSQL batches...")
 
 with open(file_path, "w", encoding="utf-8") as f:
     f.write("BEGIN;\n")
