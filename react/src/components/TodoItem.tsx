@@ -11,7 +11,8 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
   const deleteTodoMutation = useDeleteTodo();
 
   const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const passkey = window.prompt('Enter admin passkey:');
+    const requirePasskey = import.meta.env.VITE_REQUIRE_PASSKEY === 'true';
+    const passkey = requirePasskey ? window.prompt('Enter admin passkey:') : '';
     if (passkey === null) return;
 
     updateTodoMutation.mutate(
@@ -25,7 +26,8 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
   };
 
   const handleDelete = () => {
-    const passkey = window.prompt('Enter admin passkey:');
+    const requirePasskey = import.meta.env.VITE_REQUIRE_PASSKEY === 'true';
+    const passkey = requirePasskey ? window.prompt('Enter admin passkey:') : '';
     if (passkey === null) return;
 
     deleteTodoMutation.mutate(
@@ -38,13 +40,21 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
     );
   };
 
+  const handleDragStart = (e: React.DragEvent<HTMLLIElement>) => {
+    e.dataTransfer.setData('application/json', JSON.stringify(todo));
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
   return (
-    <li className="flex flex-col p-4 mb-3 bg-white rounded-xl shadow-sm border border-gray-100 transition-all hover:shadow-md group">
+    <li
+      draggable
+      onDragStart={handleDragStart}
+      className="flex flex-col p-4 mb-3 bg-white rounded-xl shadow-sm border border-gray-100 transition-all hover:shadow-md group cursor-grab active:cursor-grabbing"
+    >
       <div className="flex items-start justify-between">
         <span
-          className={`text-base font-medium ${
-            todo.status === 6 || todo.status === 4 ? 'text-gray-400 line-through' : 'text-gray-800'
-          }`}
+          className={`text-base font-medium ${todo.status === 6 || todo.status === 4 ? 'text-gray-400 line-through' : 'text-gray-800'
+            }`}
         >
           {todo.title}
         </span>

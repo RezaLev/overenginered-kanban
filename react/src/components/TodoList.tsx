@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { useTodos, useFacets } from '../hooks/useTodos';
+import { useTodos, useFacets, useUpdateTodo } from '../hooks/useTodos';
 import { getCQRSMode, setCQRSMode } from '../api/todoApi';
 import { useDebounce } from '../hooks/useDebounce';
 import TodoItem from './TodoItem';
@@ -18,7 +18,7 @@ const statuses = [
 const KanbanColumn: React.FC<{ status: number; name: string; color: string; search: string; facetCount: number }> = ({ status, name, color, search, facetCount }) => {
   const [page, setPage] = useState(1);
   const limit = 10; // Load 10 items per column per page
-  
+
   // Reset page when search changes
   React.useEffect(() => {
     setPage(1);
@@ -29,8 +29,53 @@ const KanbanColumn: React.FC<{ status: number; name: string; color: string; sear
   const total = data?.total || 0;
   const totalPages = Math.ceil(total / limit);
 
+  const updateTodoMutation = useUpdateTodo();
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    e.currentTarget.classList.add('bg-gray-100');
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.currentTarget.classList.remove('bg-gray-100');
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.currentTarget.classList.remove('bg-gray-100');
+
+    try {
+      const todoData = e.dataTransfer.getData('application/json');
+      if (!todoData) return;
+
+      const todo = JSON.parse(todoData);
+
+      // If dropping in the same column, do nothing
+      if (todo.status === status) return;
+
+      const requirePasskey = import.meta.env.VITE_REQUIRE_PASSKEY === 'true';
+      const passkey = requirePasskey ? window.prompt('Enter admin passkey to move task:') : '';
+      if (passkey === null) return;
+
+      updateTodoMutation.mutate(
+        { todo: { ...todo, status }, passkey },
+        {
+          onError: () => alert('Unauthorized: Invalid Passkey'),
+        }
+      );
+    } catch (err) {
+      console.error('Failed to parse dropped todo', err);
+    }
+  };
+
   return (
-    <div className="flex flex-col bg-gray-50/70 rounded-xl p-4 min-w-[320px] max-w-[350px] shrink-0 border border-gray-200 shadow-sm h-full max-h-[60vh]">
+    <div
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      className="flex flex-col bg-gray-50/70 rounded-xl p-4 min-w-[320px] max-w-[350px] shrink-0 border border-gray-200 shadow-sm h-full max-h-[60vh] transition-colors"
+    >
       <div className="flex items-center justify-between mb-4 pb-2 border-b border-gray-200">
         <h3 className={`px-3 py-1 rounded-full text-xs uppercase tracking-wider font-bold ${color}`}>
           {name}
@@ -39,7 +84,7 @@ const KanbanColumn: React.FC<{ status: number; name: string; color: string; sear
           {facetCount || 0}
         </span>
       </div>
-      
+
       <div className="flex-1 overflow-y-auto pr-1 custom-scrollbar">
         {isLoading ? (
           <div className="text-center py-8 text-sm text-gray-400 animate-pulse font-medium">Loading...</div>
@@ -103,21 +148,19 @@ const TodoList: React.FC = () => {
         <h1 className="text-4xl font-black text-gray-900 mb-2 text-center tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
           Task Master Kanban
         </h1>
-        
+
         <div className="flex items-center gap-3 mt-2 bg-gray-50 px-5 py-2.5 rounded-full border border-gray-200 shadow-sm">
           <span className={`text-sm font-bold ${!isCQRS ? 'text-indigo-600' : 'text-gray-400'}`}>Standard (Raw)</span>
           <button
             onClick={handleToggleCQRS}
-            className={`relative inline-flex h-7 w-14 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 shadow-inner ${
-              isCQRS ? 'bg-purple-500' : 'bg-gray-300'
-            }`}
+            className={`relative inline-flex h-7 w-14 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 shadow-inner ${isCQRS ? 'bg-purple-500' : 'bg-gray-300'
+              }`}
             role="switch"
             aria-checked={isCQRS}
           >
             <span
-              className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform shadow-md ${
-                isCQRS ? 'translate-x-8' : 'translate-x-1'
-              }`}
+              className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform shadow-md ${isCQRS ? 'translate-x-8' : 'translate-x-1'
+                }`}
             />
           </button>
           <span className={`text-sm font-bold ${isCQRS ? 'text-purple-600' : 'text-gray-400'}`}>CQRS Mode</span>

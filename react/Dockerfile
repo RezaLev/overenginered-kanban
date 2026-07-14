@@ -10,6 +10,9 @@ RUN npm ci
 # Copy the rest of the source code
 COPY . .
 
+ARG VITE_REQUIRE_PASSKEY
+ENV VITE_REQUIRE_PASSKEY=$VITE_REQUIRE_PASSKEY
+
 RUN npm run build
 
 # ---- Runtime Stage ----

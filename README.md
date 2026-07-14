@@ -11,6 +11,7 @@ A full-stack Todo application built with **Go**, **React (TypeScript)**, **Postg
 ## ✨ Features
 
 - **CRUD Operations** — Create, read, update, and delete todos
+- **Drag and Drop** — Intuitively move tasks across Kanban columns with a seamless UI
 - **6 Status Workflow** — Open → In Progress → Review → Done → On Hold → Canceled
 - **Full-Text Search** — Powered by PostgreSQL trigram indexes (standard mode) and OpenSearch (CQRS mode)
 - **Faceted Filtering** — Filter by status with real-time count badges

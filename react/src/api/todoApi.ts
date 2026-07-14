@@ -41,7 +41,7 @@ export const fetchFacets = async (searchQuery: string = ''): Promise<Facet> => {
 };
 
 export const fetchTodos = async (searchQuery: string = '', status?: number, page: number = 1, limit: number = 10): Promise<PaginatedTodos> => {
-  const params: any = { search: searchQuery, page, limit };
+  const params: Record<string, string | number> = { search: searchQuery, page, limit };
   if (status) {
     params.status = status;
   }

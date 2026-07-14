@@ -72,6 +72,8 @@ services:
     build:
       context: ./react
       dockerfile: Dockerfile
+      args:
+        VITE_REQUIRE_PASSKEY: ${APP_PASSKEY:+true}
     container_name: gotodo-frontend
     ports:
       - "80:80"

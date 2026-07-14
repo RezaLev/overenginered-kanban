@@ -10,7 +10,8 @@ const TodoForm: React.FC = () => {
     e.preventDefault();
     if (!title.trim()) return;
 
-    const passkey = window.prompt('Enter admin passkey:');
+    const requirePasskey = import.meta.env.VITE_REQUIRE_PASSKEY === 'true';
+    const passkey = requirePasskey ? window.prompt('Enter admin passkey:') : '';
     if (passkey === null) return; // User cancelled
 
     createTodoMutation.mutate({ title, passkey }, {
