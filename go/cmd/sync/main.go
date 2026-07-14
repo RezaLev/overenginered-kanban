@@ -42,6 +42,11 @@ func main() {
 	}
 	osClient, err := opensearch.NewClient(opensearch.Config{
 		Addresses: []string{osURL},
+		MaxRetries: 5,
+		RetryOnStatus: []int{429, 502, 503, 504},
+		RetryBackoff: func(i int) time.Duration {
+			return time.Duration(i) * 200 * time.Millisecond
+		},
 	})
 	if err != nil {
 		log.Fatalf("Error creating the client: %s", err)
