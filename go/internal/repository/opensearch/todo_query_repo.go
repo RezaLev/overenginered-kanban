@@ -26,11 +26,27 @@ func (r *todoQueryRepository) FetchAll(ctx context.Context, searchQuery string, 
 
 	if searchQuery != "" {
 		mustClauses = append(mustClauses, map[string]interface{}{
-			"match": map[string]interface{}{
-				"title": map[string]interface{}{
-					"query": searchQuery,
-					"fuzziness": "AUTO",
+			"bool": map[string]interface{}{
+				"should": []interface{}{
+					map[string]interface{}{
+						"match": map[string]interface{}{
+							"title": map[string]interface{}{
+								"query":     searchQuery,
+								"fuzziness": "1",
+								"operator":  "and",
+							},
+						},
+					},
+					map[string]interface{}{
+						"match": map[string]interface{}{
+							"title.ngram": map[string]interface{}{
+								"query":    searchQuery,
+								"operator": "and",
+							},
+						},
+					},
 				},
+				"minimum_should_match": 1,
 			},
 		})
 	}
@@ -113,11 +129,27 @@ func (r *todoQueryRepository) GetFacets(ctx context.Context, searchQuery string)
 
 	if searchQuery != "" {
 		mustClauses = append(mustClauses, map[string]interface{}{
-			"match": map[string]interface{}{
-				"title": map[string]interface{}{
-					"query": searchQuery,
-					"fuzziness": "AUTO",
+			"bool": map[string]interface{}{
+				"should": []interface{}{
+					map[string]interface{}{
+						"match": map[string]interface{}{
+							"title": map[string]interface{}{
+								"query":     searchQuery,
+								"fuzziness": "1",
+								"operator":  "and",
+							},
+						},
+					},
+					map[string]interface{}{
+						"match": map[string]interface{}{
+							"title.ngram": map[string]interface{}{
+								"query":    searchQuery,
+								"operator": "and",
+							},
+						},
+					},
 				},
+				"minimum_should_match": 1,
 			},
 		})
 	}

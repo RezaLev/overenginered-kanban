@@ -55,12 +55,12 @@ func main() {
 				"analyzer": {
 					"trigram_analyzer": {
 						"type": "custom",
-						"tokenizer": "standard",
-						"filter": ["lowercase", "trigram_filter"]
+						"tokenizer": "ngram_tokenizer",
+						"filter": ["lowercase"]
 					}
 				},
-				"filter": {
-					"trigram_filter": {
+				"tokenizer": {
+					"ngram_tokenizer": {
 						"type": "ngram",
 						"min_gram": 3,
 						"max_gram": 3
@@ -73,8 +73,12 @@ func main() {
 				"id": { "type": "integer" },
 				"title": { 
 					"type": "text",
-					"analyzer": "trigram_analyzer",
-					"search_analyzer": "standard"
+					"fields": {
+						"ngram": {
+							"type": "text",
+							"analyzer": "trigram_analyzer"
+						}
+					}
 				},
 				"status": { "type": "integer" }
 			}
