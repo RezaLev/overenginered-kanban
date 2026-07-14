@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 // Base URL points to the Go backend.
-// Uses VITE_API_URL env var in production, falls back to localhost for development.
+// In production, Nginx proxies /api/* to the backend. In dev, falls back to localhost:8080.
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080',
+  baseURL: import.meta.env.VITE_API_URL || '/api',
 });
 
 // Todo type matches the Go backend model

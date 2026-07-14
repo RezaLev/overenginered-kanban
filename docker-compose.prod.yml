@@ -61,24 +61,20 @@ services:
       ALLOWED_ORIGIN: ${ALLOWED_ORIGIN:-*}
       PORT: "8080"
       APP_PASSKEY: ${APP_PASSKEY:-}
-    ports:
-      - "8080:8080"
     depends_on:
       postgres:
         condition: service_healthy
       opensearch:
         condition: service_healthy
 
-  # --- React Frontend ---
+  # --- React Frontend (also serves as reverse proxy) ---
   frontend:
     build:
       context: ./react
       dockerfile: Dockerfile
-      args:
-        VITE_API_URL: ${VITE_API_URL:-http://localhost:8080}
     container_name: gotodo-frontend
     ports:
-      - "3000:80"
+      - "80:80"
     depends_on:
       - backend
 
