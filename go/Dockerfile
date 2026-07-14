@@ -12,6 +12,7 @@ COPY . .
 
 # Build a statically linked binary
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o /server ./cmd/server
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o /sync ./cmd/sync
 
 # ---- Runtime Stage ----
 FROM alpine:3.22
@@ -20,8 +21,9 @@ RUN apk --no-cache add ca-certificates
 
 WORKDIR /app
 
-# Copy only the binary from the builder stage
+# Copy binaries from the builder stage
 COPY --from=builder /server /app/server
+COPY --from=builder /sync /app/sync
 
 # Copy SQL init scripts (useful for reference or manual migration)
 COPY structure.sql /app/structure.sql

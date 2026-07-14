@@ -36,8 +36,12 @@ func main() {
 	defer dbPool.Close()
 
 	// Connect to OpenSearch
+	osURL := os.Getenv("OPENSEARCH_URL")
+	if osURL == "" {
+		osURL = "http://localhost:9200"
+	}
 	osClient, err := opensearch.NewClient(opensearch.Config{
-		Addresses: []string{"http://localhost:9200"},
+		Addresses: []string{osURL},
 	})
 	if err != nil {
 		log.Fatalf("Error creating the client: %s", err)
