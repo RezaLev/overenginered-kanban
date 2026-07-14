@@ -176,4 +176,5 @@ func main() {
 
 	stats := indexer.Stats()
 	log.Printf("Successfully synchronized %d documents in %.2f seconds", stats.NumAdded, time.Since(startTime).Seconds())
+	log.Printf("Detailed Stats -> Added to Queue: %d | Flushed to OS: %d | Failed: %d", stats.NumAdded, stats.NumFlushed, stats.NumFailed)
 }
