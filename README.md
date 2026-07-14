@@ -86,7 +86,7 @@ GoToDo/
 │   │   │   ├── postgres/        # PostgreSQL implementation
 │   │   │   └── opensearch/      # OpenSearch query implementation
 │   │   └── usecase/             # Business logic layer
-│   ├── postgres-init.sql        # Database schema & indexes
+│   ├── structure.sql            # Database schema & indexes
 │   ├── migrate.sql              # Schema migration scripts
 │   ├── Dockerfile               # Multi-stage Go build
 │   └── .air.toml                # Hot-reload configuration
@@ -132,7 +132,7 @@ Create the database and initialize the schema:
 
 ```bash
 createdb gotodo
-psql -d gotodo -f go/postgres-init.sql
+psql -d gotodo -f go/structure.sql
 ```
 
 **3. Start OpenSearch**
@@ -209,6 +209,44 @@ To stop and remove all data volumes:
 
 ```bash
 docker-compose -f docker-compose.prod.yml down -v
+```
+
+---
+
+### 📈 Generating 10M Test Records
+
+To see the true power of the CQRS architecture and OpenSearch, you can generate 10 million random todo records.
+
+**1. Generate the SQL Data**
+
+Run the Python script to generate the massive `insert_10m_lorem_todos.sql` file:
+
+```bash
+cd go
+python3 dummy.py
+```
+
+**2. Load the Data into PostgreSQL**
+
+If running locally:
+
+```bash
+psql -d gotodo -f insert_10m_lorem_todos.sql
+```
+
+If running via Docker Compose:
+
+```bash
+cat insert_10m_lorem_todos.sql | docker exec -i gotodo-postgres psql -U postgres -d gotodo
+```
+
+**3. Sync to OpenSearch**
+
+Once the data is in PostgreSQL, run the sync job to bulk-index the 10 million rows into OpenSearch:
+
+```bash
+docker exec -it gotodo-backend go run ./cmd/sync
+# Or locally: go run ./cmd/sync
 ```
 
 ---
