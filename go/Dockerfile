@@ -24,7 +24,7 @@ WORKDIR /app
 COPY --from=builder /server /app/server
 
 # Copy SQL init scripts (useful for reference or manual migration)
-COPY postgres-init.sql /app/postgres-init.sql
+COPY structure.sql /app/structure.sql
 
 EXPOSE 8080
 
