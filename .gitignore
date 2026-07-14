@@ -23,7 +23,7 @@ Thumbs.db
 
 # Large test data files
 *.sql
-!go/postgres-init.sql
+!go/structure.sql
 !go/migrate.sql
 
 # Python cache

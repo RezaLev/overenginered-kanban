@@ -35,7 +35,7 @@ words = re.findall(r'\b[a-zA-Z]+\b', lorem_text.lower())
 # Unique word list to maximize variety
 words = list(set(words))
 
-file_path = "insert_1m_lorem_todos.sql"
+file_path = "insert_10m_lorem_todos.sql"
 batch_size = 10000
 total_rows = 10000000
 
