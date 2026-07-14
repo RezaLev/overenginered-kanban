@@ -1,6 +1,6 @@
 # Dokumentasi Optimasi PostgreSQL (Skala 5 Juta Data)
 
-Sebelum kita beralih ke OpenSearch (Query Model), berikut adalah dokumentasi rekam jejak optimasi yang telah kita lakukan pada database PostgreSQL untuk menangani beban 5 juta baris data (*records*) pada aplikasi Kanban Todo.
+Sebelum kita beralih ke OpenSearch (Query Model), berikut adalah dokumentasi rekam jejak optimasi yang telah kita lakukan pada database PostgreSQL untuk menangani beban 10 juta baris data (*records*) pada aplikasi Kanban Todo.
 
 Optimasi ini berhasil menurunkan waktu *load* dari **10+ detik** menjadi **hitungan milidetik (< 500ms)**.
 

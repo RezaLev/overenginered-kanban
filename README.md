@@ -2,7 +2,7 @@
 
 A full-stack Todo application built with **Go**, **React (TypeScript)**, **PostgreSQL**, and **OpenSearch** — featuring a **CQRS (Command Query Responsibility Segregation)** architecture for high-performance reads at scale.
 
-> Designed to handle **1M+ records** with fast full-text search, faceted filtering, and paginated results.
+> Designed to handle **10M+ records** with fast full-text search, faceted filtering, and paginated results.
 
 ---
 
@@ -50,24 +50,24 @@ A full-stack Todo application built with **Go**, **React (TypeScript)**, **Postg
 
 ### CQRS Pattern
 
-| Path | Mode | Description |
-|---|---|---|
-| `POST/PUT/DELETE /todos` | **Command** | All writes go to PostgreSQL |
-| `GET /todos` | **Standard Query** | Reads from PostgreSQL with trigram search |
-| `GET /cqrs/todos` | **CQRS Query** | Reads from OpenSearch for faster full-text search |
+| Path                     | Mode               | Description                                       |
+| ------------------------ | ------------------ | ------------------------------------------------- |
+| `POST/PUT/DELETE /todos` | **Command**        | All writes go to PostgreSQL                       |
+| `GET /todos`             | **Standard Query** | Reads from PostgreSQL with trigram search         |
+| `GET /cqrs/todos`        | **CQRS Query**     | Reads from OpenSearch for faster full-text search |
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology |
-|---|---|
-| **Frontend** | React 18, TypeScript, Vite, TailwindCSS, React Query, Axios |
-| **Backend** | Go 1.26, `net/http`, Clean Architecture |
-| **Database** | PostgreSQL 16 with `pg_trgm` extension |
-| **Search Engine** | OpenSearch 2.x |
-| **Containerization** | Docker, Docker Compose |
-| **Dev Tools** | Air (Go hot-reload), Vite HMR |
+| Layer                | Technology                                                  |
+| -------------------- | ----------------------------------------------------------- |
+| **Frontend**         | React 18, TypeScript, Vite, TailwindCSS, React Query, Axios |
+| **Backend**          | Go 1.26, `net/http`, Clean Architecture                     |
+| **Database**         | PostgreSQL 16 with `pg_trgm` extension                      |
+| **Search Engine**    | OpenSearch 2.x                                              |
+| **Containerization** | Docker, Docker Compose                                      |
+| **Dev Tools**        | Air (Go hot-reload), Vite HMR                               |
 
 ---
 
@@ -192,12 +192,12 @@ cp .env.example .env
 docker-compose -f docker-compose.prod.yml up --build -d
 ```
 
-| Service | URL |
-|---|---|
-| Frontend | http://localhost:3000 |
+| Service     | URL                   |
+| ----------- | --------------------- |
+| Frontend    | http://localhost:3000 |
 | Backend API | http://localhost:8080 |
-| OpenSearch | http://localhost:9200 |
-| PostgreSQL | localhost:5432 |
+| OpenSearch  | http://localhost:9200 |
+| PostgreSQL  | localhost:5432        |
 
 To stop all services:
 
@@ -215,16 +215,16 @@ docker-compose -f docker-compose.prod.yml down -v
 
 ## ⚙️ Environment Variables
 
-| Variable | Default | Description |
-|---|---|---|
-| `DATABASE_URL` | `postgres://postgres:postgres@localhost:5432/gotodo` | PostgreSQL connection string |
-| `OPENSEARCH_URL` | `http://localhost:9200` | OpenSearch endpoint |
-| `PORT` | `8080` | Go server port |
-| `ALLOWED_ORIGIN` | `*` | CORS allowed origin (set to your domain in production) |
-| `VITE_API_URL` | `http://localhost:8080` | Backend API URL (React build-time) |
-| `POSTGRES_USER` | `postgres` | PostgreSQL user (Docker) |
-| `POSTGRES_PASSWORD` | `postgres` | PostgreSQL password (Docker) |
-| `POSTGRES_DB` | `gotodo` | PostgreSQL database name (Docker) |
+| Variable            | Default                                              | Description                                            |
+| ------------------- | ---------------------------------------------------- | ------------------------------------------------------ |
+| `DATABASE_URL`      | `postgres://postgres:postgres@localhost:5432/gotodo` | PostgreSQL connection string                           |
+| `OPENSEARCH_URL`    | `http://localhost:9200`                              | OpenSearch endpoint                                    |
+| `PORT`              | `8080`                                               | Go server port                                         |
+| `ALLOWED_ORIGIN`    | `*`                                                  | CORS allowed origin (set to your domain in production) |
+| `VITE_API_URL`      | `http://localhost:8080`                              | Backend API URL (React build-time)                     |
+| `POSTGRES_USER`     | `postgres`                                           | PostgreSQL user (Docker)                               |
+| `POSTGRES_PASSWORD` | `postgres`                                           | PostgreSQL password (Docker)                           |
+| `POSTGRES_DB`       | `gotodo`                                             | PostgreSQL database name (Docker)                      |
 
 ---
 
@@ -232,21 +232,21 @@ docker-compose -f docker-compose.prod.yml down -v
 
 ### Standard CRUD (`/todos`)
 
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/todos?search=&status=&page=&limit=` | List todos with search, filter, pagination |
-| `GET` | `/todos/facets?search=` | Get status facet counts |
-| `GET` | `/todos/{id}` | Get a single todo |
-| `POST` | `/todos` | Create a new todo |
-| `PUT` | `/todos/{id}` | Update a todo |
-| `DELETE` | `/todos/{id}` | Delete a todo |
+| Method   | Endpoint                              | Description                                |
+| -------- | ------------------------------------- | ------------------------------------------ |
+| `GET`    | `/todos?search=&status=&page=&limit=` | List todos with search, filter, pagination |
+| `GET`    | `/todos/facets?search=`               | Get status facet counts                    |
+| `GET`    | `/todos/{id}`                         | Get a single todo                          |
+| `POST`   | `/todos`                              | Create a new todo                          |
+| `PUT`    | `/todos/{id}`                         | Update a todo                              |
+| `DELETE` | `/todos/{id}`                         | Delete a todo                              |
 
 ### CQRS Read-Only (`/cqrs/todos`)
 
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/cqrs/todos?search=&status=&page=&limit=` | List todos via OpenSearch |
-| `GET` | `/cqrs/todos/facets?search=` | Get facets via OpenSearch |
+| Method | Endpoint                                   | Description               |
+| ------ | ------------------------------------------ | ------------------------- |
+| `GET`  | `/cqrs/todos?search=&status=&page=&limit=` | List todos via OpenSearch |
+| `GET`  | `/cqrs/todos/facets?search=`               | Get facets via OpenSearch |
 
 ---
 
@@ -270,14 +270,14 @@ CREATE INDEX IF NOT EXISTS idx_todos_status_id ON todos (status ASC, id DESC);
 
 ### Status Codes
 
-| Code | Status |
-|---|---|
-| 1 | Open |
-| 2 | In Progress |
-| 3 | Review |
-| 4 | Done |
-| 5 | On Hold |
-| 6 | Canceled |
+| Code | Status      |
+| ---- | ----------- |
+| 1    | Open        |
+| 2    | In Progress |
+| 3    | Review      |
+| 4    | Done        |
+| 5    | On Hold     |
+| 6    | Canceled    |
 
 ---
 
