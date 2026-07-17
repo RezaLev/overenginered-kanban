@@ -81,10 +81,13 @@ services:
       - backend
     networks:
       - shared-net
+      - default
 
 networks:
   shared-net:
     external: true
+  default:
+    name: overenginered-kanban_default
 
 volumes:
   postgres_data:
