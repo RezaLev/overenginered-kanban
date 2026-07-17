@@ -79,6 +79,12 @@ services:
       - "80:80"
     depends_on:
       - backend
+    networks:
+      - shared-net
+
+networks:
+  shared-net:
+    external: true
 
 volumes:
   postgres_data:
