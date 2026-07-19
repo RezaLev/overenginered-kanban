@@ -12,13 +12,14 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./go/structure.sql:/docker-entrypoint-initdb.d/init.sql
-    ports:
-      - "5432:5432"
+    # Ports removed to prevent conflicts and ensure security
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - internal_net
 
   # --- Search Engine ---
   opensearch:
@@ -41,13 +42,14 @@ services:
         hard: 65536
     volumes:
       - opensearch_data:/usr/share/opensearch/data
-    ports:
-      - "9200:9200"
+    # Ports removed to keep OpenSearch private
     healthcheck:
       test: ["CMD-SHELL", "curl -s http://localhost:9200 >/dev/null || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 10
+    networks:
+      - internal_net
 
   # --- Go Backend API ---
   backend:
@@ -66,6 +68,8 @@ services:
         condition: service_healthy
       opensearch:
         condition: service_healthy
+    networks:
+      - internal_net
 
   # --- React Frontend (also serves as reverse proxy) ---
   frontend:
@@ -75,20 +79,19 @@ services:
       args:
         VITE_REQUIRE_PASSKEY: ${APP_PASSKEY:+true}
     container_name: gotodo-frontend
-    ports:
-      - "80:80"
+    # Removed port 80:80 to avoid clashing with Caddy
     depends_on:
       - backend
     networks:
-      - shared-net
-      - default
-
-networks:
-  shared-net:
-    external: true
-  default:
-    name: overenginered-kanban_default
+      - internal_net
+      - web_routing
 
 volumes:
   postgres_data:
   opensearch_data:
+
+networks:
+  web_routing:
+    external: true
+  internal_net:
+    driver: bridge
