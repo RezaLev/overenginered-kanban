@@ -145,8 +145,9 @@ const TodoList: React.FC = () => {
   return (
     <div className="max-w-[95vw] mx-auto p-6 bg-white/60 backdrop-blur-md rounded-2xl shadow-xl mt-6 min-h-[85vh] flex flex-col">
       <div className="flex flex-col items-center mb-8">
-        <h1 className="text-4xl font-black text-gray-900 mb-2 text-center tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
-          Task Master Kanban
+        <img src="/icon.png" alt="Logo" className="w-16 h-16 mb-4 drop-shadow-md" />
+        <h1 className="text-4xl font-black text-gray-900 mb-2 text-center tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 capitalize">
+          CQRS Kanban Experiment
         </h1>
 
         <div className="flex items-center gap-3 mt-2 bg-gray-50 px-5 py-2.5 rounded-full border border-gray-200 shadow-sm">
